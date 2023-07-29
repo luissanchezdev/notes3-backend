@@ -33,6 +33,9 @@ app.use(cors())
 // used: create new notes with post method
 app.use(express.json())
 
+// Allow that express verify first on build directory
+app.use(express.static('build'))
+
 const requestLogger = (request, response, next) => {
   console.log('Method:', request.method)
   console.log('Path:  ', request.path)
@@ -50,10 +53,7 @@ app.get('/api/notes', (request, response) => {
 
 app.get('/api/notes/:id', (request, response) => {
     const id = Number(request.params.id)
-    console.log({id})
     const note  = notes.find( note => note.id === id)
-    console.log({note})
-    console.log(typeof(id))
     if (note) {
         response.json(note)
     } else {
@@ -78,9 +78,24 @@ app.post('/api/notes', (request, response) => {
     date: new Date()
   }
 
-  console.log({note})
   notes = notes.concat(note)
   response.json(note)
+})
+
+app.put('/api/notes/:id', (request, response) => {
+  const id = Number(request.params.id)
+  const newNotes = notes.filter(note => note.id !== id)
+  const oldNote = notes.find(note => note.id === id)
+
+  if (oldNote !== undefined) {
+    const updateNote = {...oldNote, important: !oldNote.important}
+    notes = newNotes.concat(updateNote)
+    return response.json(updateNote)
+  } else {
+    return response.status(400).json({
+      error: "note not udpate"
+    })
+  }
 })
 
 app.delete('/api/notes/:id', (request, response) => {
