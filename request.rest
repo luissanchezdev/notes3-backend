@@ -5,8 +5,7 @@ POST http://localhost:3001/api/notes
 Content-Type: application/json
 
 {
-  "id": 4,
-  "content": "On a hill far away stood an old rugged cross",
+  "content": "where the dearest and the best",
   "date": "2023-07-28T17:30:31.098Z",
   "important": true
 }
